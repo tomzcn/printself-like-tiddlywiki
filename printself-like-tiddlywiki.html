@@ -1,0 +1,35 @@
+<script>
+    function mycallback(){}
+    function write(){
+    let kai=String.fromCharCode(96);
+    let da=String.fromCharCode(60);
+    let text=String.raw`${da}script>
+    function mycallback(){}
+    function write(){
+    let kai=String.fromCharCode(96);
+    let da=String.fromCharCode(60);
+    let text=String.raw${kai}selfself${kai};
+    text=text.replace(/\x3Ctextarea id="ta">.*${da}\/textarea>/,"\x3Ctextarea id=\"ta\">"+ta.value+"\x3C/textarea>");
+    text=text.replace("selfself",text);
+    for (i in [1,2]){text=text.replace("${kai}selfself${kai}","$"+"{kai}selfself$"+"{kai}")}
+    for (i in [1,2,3,4,5,6,7,8]){text=text.replace(String.fromCharCode(60),"$"+"{da}")}
+    text=text.replace("$"+"{da}",String.fromCharCode(60))
+        window.$tw.customSaver.save(text,"method",mycallback);
+    }                
+    ${da}/script>
+
+    ${da}a href="javascript:write()">write${da}/a>
+    ${da}br>
+    ${da}textarea id="ta">123456789</textarea>`;
+    text=text.replace(/\x3Ctextarea id="ta">.*<\/textarea>/,"\x3Ctextarea id=\"ta\">"+ta.value+"\x3C/textarea>");
+    text=text.replace("selfself",text);
+    for (i in [1,2]){text=text.replace("`selfself`","$"+"{kai}selfself$"+"{kai}")}
+    for (i in [1,2,3,4,5,6,7,8]){text=text.replace(String.fromCharCode(60),"$"+"{da}")}
+    text=text.replace("$"+"{da}",String.fromCharCode(60))
+        window.$tw.customSaver.save(text,"method",mycallback);
+    }                
+    </script>
+
+    <a href="javascript:write()">write</a>
+    <br>
+    <textarea id="ta">123456789</textarea>
