@@ -1,8 +1,8 @@
-# printself-like-tiddlywiki
+### printself-like-tiddlywiki
 
 open by tiddlystow
 
-steps:
+### steps:
 
 save the project to a zip file.
 
