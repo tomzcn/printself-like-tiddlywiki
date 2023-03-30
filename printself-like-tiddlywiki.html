@@ -1,14 +1,178 @@
-<html><head></head><body><a href="javascript:write()">write</a>
-<br>
-<textarea id="ta">123</textarea>
+<html><head>
+    <title>printself</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0
+	maximum-scale=1, user-scalable=no">
+  </head>
+  <body onload="printself_onload();">
+    <!-- <a href="javascript:location.reload(true)">reload</a>
+    <a href="javascript:console.log($ps.data);">data</a> -->
 
+    <!-- onload -->
+    <script>
+      var $ps = { plugin: {}, source_code: "" };
 
-<script>
-	function mycallback() { }
-	function write() {
-		var text_self = document.children[0].outerHTML;
-    console.log(text_self);
-    text_self=text_self.replace(/\x3Ctextarea id="ta">.*<\/textarea>/,"\x3Ctextarea id=\"ta\">"+ta.value+"\x3C/textarea>");
-		window.$tw.customSaver.save(text_self, "method", mycallback);
-	}
-</script></body></html>
+      // global.$ps = $ps;
+      window.$ps = $ps;
+
+      function printself_onload() {
+        $ps.source_code = document.children[0].outerHTML;
+        // console.log($ps.source_code);
+        $ps.data = document.getElementsByClassName(
+          "tiddlywiki-tiddler-store"
+        )[0];
+        $ps.data = JSON.parse($ps.data.innerHTML);
+
+        //run
+        $ps.plugin.microblog.util.display();
+        $("printself-microblog-input").focus();
+      }
+      let $ = (id) => {
+        var id = document.getElementById(id);
+        return id;
+      };
+    </script>
+
+    <!-- saves -->
+    <script>
+      var desktop_save = function () {
+        let text = get_text();
+
+        //remove "<div id=tiddlyfox-message-box ..." . just in desktop_save.
+        text = remove_fox(text);
+
+        var pathname = get_pathname();
+
+        // Create the message element and put it in the message box
+        var messageBox = document.getElementById("tiddlyfox-message-box");
+        var message = document.createElement("div");
+        message.setAttribute(
+          "data-tiddlyfox-path",
+          decodeURIComponent(pathname)
+        );
+        message.setAttribute("data-tiddlyfox-content", text);
+        messageBox.appendChild(message);
+        console.log(message);
+
+        // fire event
+        var event = new CustomEvent("tiddlyfox-save-file", { bubbles: true });
+        message.dispatchEvent(event);
+        messageBox.innerHTML='';
+      };
+
+      var get_text = function () {
+        var text_self = $ps.source_code;
+        var reg1=RegExp('storage.*storage','g');
+        var reg =
+          /\x3Cscript class="tiddlywiki-tiddler-store" type="application\/json">.*\x3C\/script>/;
+        let text =
+          '\x3Cscript class="tiddlywiki-tiddler-store" type="application/json">' +
+          JSON.stringify($ps.data) +  '\x3C/script>';
+        text_self = text_self.replace(reg, text);
+        // console.log(text_self);
+        return text_self;
+      };
+
+      var remove_fox = function (text) {
+        var reg =
+          /\x3Cdiv id="tiddlyfox-message-box">.*\x3C\/div>/;
+        let text1 ='';
+        text = text.replace(reg, text1);
+        return text;
+      };
+      var remove_last_line = function (text) {
+        // var text = $ps.source_code;
+        const lines = text.split("\n"); // split text into array of lines
+        lines.pop(); // remove last line from array
+        text = lines.join("\n"); // join remaining lines back together
+        return text;
+      };
+
+      function get_pathname() {
+        var pathname = document.location.toString().split("#")[0];
+        if (pathname.indexOf("file://localhost/") === 0) {
+          pathname = "file://" + pathname.substr(16);
+        }
+
+        if (/^file\:\/\/\/[A-Z]\:\//i.test(pathname)) {
+          // Remove the leading slash and convert slashes to backslashes
+          pathname = pathname.substr(8).replace(/\//g, "\\");
+          // Firefox Windows network path file://///server/share/blah/blah --> //server/share/blah/blah
+        } else if (pathname.indexOf("file://///") === 0) {
+          pathname =
+            "\\\\" + unescape(pathname.substr(10)).replace(/\//g, "\\");
+          // Mac/Unix local path file:///path/path --> /path/path
+        } else if (pathname.indexOf("file:///") === 0) {
+          pathname = unescape(pathname.substr(7));
+          // Mac/Unix local path file:/path/path --> /path/path
+        } else if (pathname.indexOf("file:/") === 0) {
+          pathname = unescape(pathname.substr(5));
+          // Otherwise Windows networth path file://server/share/path/path --> \\server\share\path\path
+        } else {
+          pathname =
+            "\\\\" +
+            unescape(pathname.substr(7)).replace(new RegExp("/", "g"), "\\");
+        }
+
+        return pathname;
+      }
+
+      function stow_save() {
+        function mycallback() {}
+        var text_self = get_text();
+        window.$tw.customSaver.save(text_self, "method", mycallback);
+      }
+
+      var file_save = function () {
+        const data = get_text();
+        const blob = new Blob([data], { type: "text/html" }); // create Blob object
+        const url = URL.createObjectURL(blob); // create URL for Blob
+        const link = document.createElement("a"); // create link element
+        link.download = "saves.html"; // set download attribute
+        link.href = url; // set href attribute to URL
+        document.body.appendChild(link); // append link to document
+        link.click(); // simulate click on link to download file
+      };
+    </script>
+    <a href="javascript:desktop_save();">desktop-save</a>
+    <a href="javascript:stow_save();">stow-save</a>
+    <a href="javascript:file_save();">file-save</a>
+
+    <div id="storeArea" style="display: none"></div>
+    <!-- start storage --><script class="tiddlywiki-tiddler-store" type="application/json">["post1","1","2","3","4","5","6"]</script> <!-- end storage -->
+
+    <br>
+
+    <!-- microblog -->
+    <input id="printself-microblog-input" style="width: 100%" onkeypress="$ps.plugin.microblog.util.input_key(event);">
+    <div id="printself-microblog-output">
+      <ul>
+        <li>post1</li>
+        <li>1</li>
+      </ul>
+    </div>
+    <script>
+      $ps.plugin.microblog = { util: {} };
+      $ps.plugin.microblog.util.input_key = (event) => {
+        if (event.keyCode == 13) {
+          $ps.data.push($("printself-microblog-input").value);
+          $ps.plugin.microblog.util.display();
+          $("printself-microblog-input").value = "";
+        }
+      };
+
+      $ps.plugin.microblog.util.display = function () {
+        let output = $("printself-microblog-output");
+        output.innerHTML = "";
+
+        var list = document.createElement("ul");
+        output.appendChild(list);
+
+        var a1=[...$ps.data].reverse()
+        for (i in a1) {
+          var li = document.createElement("li");
+          li.innerHTML = a1[i];
+          list.appendChild(li);
+        }
+      };
+    </script>
+</body></html>
