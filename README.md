@@ -18,9 +18,9 @@ click "open existing from a local file ..."
 
 open unziped "printself-like-tiddlywiki.html" file.
 
-type in some letters in text area.
+type in some letters in input area.
 
-click "write".
+hit return key.
 
 refresh the webpage.
 
