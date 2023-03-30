@@ -29,9 +29,6 @@
           /\x3Ctextarea id="ta">.*<\/textarea>/,
           '\x3Ctextarea id="ta">' + ta.value + "\x3C/textarea>"
         );
-        const lines = text_self.split("\n"); // split text into array of lines
-        lines.pop(); // remove last line from array
-        text_self = lines.join("\n"); // join remaining lines back together
         return text_self;
       };
     </script>
