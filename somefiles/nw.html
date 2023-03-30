@@ -1,0 +1,111 @@
+<html><head>
+    <title>printself-nw</title>
+  </head>
+  <body>
+    <a href="javascript:location.reload(true)">reload</a>
+
+    <a href="javascript:desktop_save();">desktop-save</a>
+
+    <br>
+    <textarea id="ta">123000999777222</textarea>
+
+    <script>
+      var desktop_save = function () {
+        var text = get_text();
+
+        var messageBox = document.getElementById("tiddlyfox-message-box");
+
+        var pathname = document.location.toString().split("#")[0];
+        if (pathname.indexOf("file://localhost/") === 0) {
+          pathname = "file://" + pathname.substr(16);
+        }
+
+        if (/^file\:\/\/\/[A-Z]\:\//i.test(pathname)) {
+          // Remove the leading slash and convert slashes to backslashes
+          pathname = pathname.substr(8).replace(/\//g, "\\");
+          // Firefox Windows network path file://///server/share/blah/blah --> //server/share/blah/blah
+        } else if (pathname.indexOf("file://///") === 0) {
+          pathname =
+            "\\\\" + unescape(pathname.substr(10)).replace(/\//g, "\\");
+          // Mac/Unix local path file:///path/path --> /path/path
+        } else if (pathname.indexOf("file:///") === 0) {
+          pathname = unescape(pathname.substr(7));
+          // Mac/Unix local path file:/path/path --> /path/path
+        } else if (pathname.indexOf("file:/") === 0) {
+          pathname = unescape(pathname.substr(5));
+          // Otherwise Windows networth path file://server/share/path/path --> \\server\share\path\path
+        } else {
+          pathname =
+            "\\\\" +
+            unescape(pathname.substr(7)).replace(new RegExp("/", "g"), "\\");
+        }
+
+        // Create the message element and put it in the message box
+        var message = document.createElement("div");
+        message.setAttribute(
+          "data-tiddlyfox-path",
+          decodeURIComponent(pathname)
+        );
+        message.setAttribute("data-tiddlyfox-content", text);
+        messageBox.appendChild(message);
+        var callback = function () {};
+        message.addEventListener(
+          "tiddlyfox-have-saved-file",
+          function (event) {
+            callback(null);
+          },
+          false
+        );
+        // Create and dispatch the custom event to the extension
+
+        //test
+        message.innerHTML = "hhh";
+        messageBox.addEventListener(
+          "click",
+          function (e) {
+            console.log("messageBox div");
+          },
+          false
+        );
+        message.addEventListener(
+          "click",
+          function (e) {
+            console.log("message div");
+            // e.stopPropagation();
+          },
+          false
+        );
+        messageBox.addEventListener(
+          "tiddlyfox-save-file1",
+          function (e) {
+            console.log("fox outter div 1");
+          },
+          false
+        );
+        message.addEventListener(
+          "tiddlyfox-save-file1",
+          function (e) {
+            console.log("fox inner div 1");
+            // e.stopPropagation();
+          },
+          false
+        );
+
+        var event = new CustomEvent("tiddlyfox-save-file", { bubbles: true });
+        // alert(event.Bubbles);
+        message.dispatchEvent(event);
+      };
+
+      var get_text = function () {
+        var text_self = document.children[0].outerHTML;
+        text_self = text_self.replace(
+          /\x3Ctextarea id="ta">.*<\/textarea>/,
+          '\x3Ctextarea id="ta">' + ta.value + "\x3C/textarea>"
+        );
+        const lines = text_self.split("\n"); // split text into array of lines
+        lines.pop(); // remove last line from array
+        text_self = lines.join("\n"); // join remaining lines back together
+        return text_self;
+      };
+    </script>
+  

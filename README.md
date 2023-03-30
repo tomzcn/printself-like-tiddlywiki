@@ -4,7 +4,7 @@ Open by tiddlystow, toddlyDesktop. Save to file.
 
 As a sample plugin. Implemented a microblog plugin.
 
-### steps of open by tiddlystow:
+### Steps of open by tiddlystow:
 
 save the project to a zip file.
 
@@ -28,3 +28,6 @@ open again "printself-like-tiddlywiki.html"
 
 You will see what you just typed.
 
+### Other notes
+
+The separate files for each save method are in the somefiles folder.

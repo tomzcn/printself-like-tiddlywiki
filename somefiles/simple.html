@@ -1,0 +1,18 @@
+<html><head></head><body><a href="javascript:write()">write</a>
+<br>
+<textarea id="ta">123000</textarea>
+
+
+<script>
+	function mycallback() { }
+	function write() {
+		var text_self = document.children[0].outerHTML;
+    console.log(text_self);
+    text_self=text_self.replace(/\x3Ctextarea id="ta">.*<\/textarea>/,"\x3Ctextarea id=\"ta\">"+ta.value+"\x3C/textarea>");
+		window.$tw.customSaver.save(text_self, "method", mycallback);
+	}
+</script>
+
+
+
+</body></html>

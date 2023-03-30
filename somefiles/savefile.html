@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>printself-nw</title>
+  </head>
+  <body>
+    <a href="javascript:location.reload(true)">reload</a>
+
+    <a href="javascript:file_save();">file-save</a>
+
+    <br />
+    <textarea id="ta">123</textarea>
+
+    <script>
+      var file_save = function () {
+        var text = get_text();
+        const data = text;
+        const blob = new Blob([data], { type: "text/plain" }); // create Blob object
+        const url = URL.createObjectURL(blob); // create URL for Blob
+        const link = document.createElement("a"); // create link element
+        link.download = "savefile.html"; // set download attribute
+        link.href = url; // set href attribute to URL
+        document.body.appendChild(link); // append link to document
+        link.click(); // simulate click on link to download file
+      };
+
+      var get_text = function () {
+        var text_self = document.children[0].outerHTML;
+        text_self = text_self.replace(
+          /\x3Ctextarea id="ta">.*<\/textarea>/,
+          '\x3Ctextarea id="ta">' + ta.value + "\x3C/textarea>"
+        );
+        const lines = text_self.split("\n"); // split text into array of lines
+        lines.pop(); // remove last line from array
+        text_self = lines.join("\n"); // join remaining lines back together
+        return text_self;
+      };
+    </script>
+  </body>
+</html>
