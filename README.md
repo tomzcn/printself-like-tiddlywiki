@@ -1,8 +1,8 @@
 ### printself-like-tiddlywiki
 
-open by tiddlystow
+open by tiddlystow, toddlyDesktop. save to file.
 
-### steps:
+### steps of open by tiddlystow:
 
 save the project to a zip file.
 
