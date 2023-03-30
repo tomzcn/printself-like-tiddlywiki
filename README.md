@@ -1,6 +1,8 @@
 ### printself-like-tiddlywiki
 
-open by tiddlystow, toddlyDesktop. save to file.
+Open by tiddlystow, toddlyDesktop. Save to file.
+
+As a sample plugin. Implemented a microblog plugin.
 
 ### steps of open by tiddlystow:
 
